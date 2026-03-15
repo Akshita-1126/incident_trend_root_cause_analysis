@@ -1,3 +1,4 @@
+-- Creating table with the 
 CREATE TABLE incidents (
     number VARCHAR(255),
     incident_state VARCHAR(255),
@@ -42,6 +43,7 @@ select * from incidents where resolved_at = '?';
 DELETE FROM incidents
 WHERE resolved_at='?';
 
+-- Deleting all unnecessary columns
 ALTER TABLE incidents
 DROP COLUMN active,
 DROP COLUMN reopen_count,
@@ -75,6 +77,7 @@ DROP COLUMN caused_by,
 DROP COLUMN resolved_by,
 DROP COLUMN closed_at;
 
+-- checking all unique value to find any unusual enteries
 SELECT Distinct status from incidents;
 
 select * from incidents where status='-100'
@@ -83,17 +86,34 @@ select * from incidents;
 
 commit;
 
+-- assigning valid value for '?'
 UPDATE incidents
 SET closed_code = 'Unknown'
 WHERE closed_code='?';
 
-
+-- Renaming the colun name 
 ALTER TABLE incidents 
 RENAME COLUMN assignment_group TO assigned_team;
 
+-- Deleteing status column cause its no longer needed
 Delete from incidents
 where status != 'Closed';
 Alter table incidents
 drop column status;
+
+--Modifying datatype for created at and resolved at to Timestamp 
+ALTER TABLE incidents
+ALTER COLUMN created_at TYPE Timestamp
+USING created_at::Timestamp;
+
+ALTER TABLE incidents
+ALTER COLUMN resolved_at TYPE Timestamp
+USING resolved_at::Timestamp;
+
+select * from incidents;
+
+
+
+
 
 
