@@ -78,10 +78,10 @@ SELECT * FROM incidents;
 
 -- deleting all those values where resolved_at is '?'
 delete from incidents
-where resolved_at='resolved_at';
+where resolved_at='?';
 
 delete from incidents
-where number= 'number';
+where resolved_at= 'resolved_at'; -- deleting the header of excel which was converted into a row while importing data
 
 -- changing datatype for created at and resolved at
 ALTER TABLE incidents
@@ -112,20 +112,25 @@ Drop Table incident_data; --dropped the old table
 
 SELECT * FROM incident_data;
 
+-- Replacing invalid values into valid.
+select distinct closed_code from incident_data;
+UPDATE incident_data
+SET closed_code = 'Unknown'
+WHERE closed_code= '?';
 
+select distinct category from incident_data;
+UPDATE incident_data
+SET category = 'Other'
+WHERE category= '?';
 
+select distinct severity from incident_data;
 
+select distinct status from incident_data;
 
-
-
-SELECT created_at
-FROM incident_data
-WHERE created_at !~ '^\d{4}-\d{2}-\d{2}';
-
-
-
-
-
+select distinct team_assigned from incident_data;
+UPDATE incident_data
+SET team_assigned = 'Unknown'
+WHERE team_assigned= '?';
 
 
 
