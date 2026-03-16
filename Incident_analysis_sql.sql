@@ -39,9 +39,6 @@ CREATE TABLE incidents (
 );
 
 select * from incidents;
-select * from incidents where resolved_at = '?';
-DELETE FROM incidents
-WHERE resolved_at='?';
 
 -- Deleting all unnecessary columns
 ALTER TABLE incidents
@@ -77,40 +74,57 @@ DROP COLUMN caused_by,
 DROP COLUMN resolved_by,
 DROP COLUMN closed_at;
 
--- checking all unique value to find any unusual enteries
-SELECT Distinct status from incidents;
+SELECT * FROM incidents;
 
-select * from incidents where status='-100'
+-- deleting all those values where resolved_at is '?'
+delete from incidents
+where resolved_at='resolved_at';
 
-select * from incidents;
+delete from incidents
+where number= 'number';
 
-commit;
-
--- assigning valid value for '?'
-UPDATE incidents
-SET closed_code = 'Unknown'
-WHERE closed_code='?';
-
--- Renaming the colun name 
-ALTER TABLE incidents 
-RENAME COLUMN assignment_group TO assigned_team;
-
--- Deleteing status column cause its no longer needed
-Delete from incidents
-where status != 'Closed';
-Alter table incidents
-drop column status;
-
---Modifying datatype for created at and resolved at to Timestamp 
+-- changing datatype for created at and resolved at
 ALTER TABLE incidents
-ALTER COLUMN created_at TYPE Timestamp
-USING created_at::Timestamp;
+ALTER COLUMN opened_at TYPE Timestamp
+USING opened_at::Timestamp;
 
 ALTER TABLE incidents
 ALTER COLUMN resolved_at TYPE Timestamp
 USING resolved_at::Timestamp;
 
 select * from incidents;
+
+-- aggregating duplicate data: For this, I'll create a different table usning the event log data as well as renaming the columns.
+CREATE TABLE incident_data AS
+SELECT
+    number as incident_id,
+    MIN(opened_at) AS created_at,
+    MAX(resolved_at) AS resolved_at,
+    MIN(impact) AS severity,
+    MIN(category) AS category,
+    MAX(assignment_group) AS team_assigned,
+    MAX(closed_code) AS closed_code,
+    MAX(incident_state) AS status
+FROM incidents
+GROUP BY number;
+
+Drop Table incident_data; --dropped the old table
+
+SELECT * FROM incident_data;
+
+
+
+
+
+
+
+SELECT created_at
+FROM incident_data
+WHERE created_at !~ '^\d{4}-\d{2}-\d{2}';
+
+
+
+
 
 
 
