@@ -132,7 +132,7 @@ UPDATE incident_data
 SET team_assigned = 'Unknown'
 WHERE team_assigned= '?';
 
-
+SELECT * FROM incident_data;
 
 
 
