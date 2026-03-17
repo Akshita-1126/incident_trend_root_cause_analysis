@@ -108,8 +108,6 @@ SELECT
 FROM incidents
 GROUP BY number;
 
-Drop Table incident_data; --dropped the old table
-
 SELECT * FROM incident_data;
 
 -- Replacing invalid values into valid.
