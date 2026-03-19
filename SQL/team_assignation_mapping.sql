@@ -22,6 +22,8 @@ SELECT
     closed_code,
     group_code,
     CASE
+	    WHEN group_code = 'Unknown' THEN 'Unknown'
+		
         WHEN closed_code = 'code 1' THEN 'Network Operations Team'
 
         WHEN closed_code = 'code 2' THEN 'Database Administration Team'
@@ -61,7 +63,7 @@ SELECT
     END AS team_assigned
 FROM incident_group_mapping;
 
-SELECT * FROM assigned_team; 
+SELECT * FROM assigned_team;
 
 -- fetching the incident_id along with root_cause and team_assigned values
 SELECT 
@@ -77,3 +79,11 @@ group by a.incident_id, b.root_cause, c.team_assigned;
 
 select incident_id, team_assigned, closed_code
 from incident_data
+
+-- we see there no meaning of group_code
+select group_code, team_assigned
+from assigned_team
+where group_code='Unknown'
+group by team_assigned, group_code;
+
+Truncate table assigned_team;
