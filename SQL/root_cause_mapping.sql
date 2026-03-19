@@ -1,5 +1,5 @@
 CREATE TABLE root_cause_mapping (
-code VARCHAR(20),
+code VARCHAR(20), -- primary key
 root_cause VARCHAR(100)
 );
 
