@@ -63,15 +63,17 @@ FROM incident_group_mapping;
 
 SELECT * FROM assigned_team; 
 
+-- fetching the incident_id along with root_cause and team_assigned values
 SELECT 
-distinct a.incident_id, 
+a.incident_id, 
 b.root_cause, 
 c.team_assigned
 FROM incident_data a
 JOIN root_cause_mapping b
    ON a.closed_code=b.code 
 JOIN assigned_team c
-   ON a.closed_code= c.closed_code;
+   ON a.closed_code= c.closed_code
+group by a.incident_id, b.root_cause, c.team_assigned;
 
-
-
+select incident_id, team_assigned, closed_code
+from incident_data
