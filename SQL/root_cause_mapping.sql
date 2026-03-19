@@ -25,7 +25,7 @@ INSERT INTO root_cause_mapping VALUES
 
 select * from root_cause_mapping;
 
-select a.incident_id, b.root_cause
+select a.incident_id,a.closed_code, b.root_cause
 from incident_data a
 Join root_cause_mapping b
 on a.closed_code = b.code;
