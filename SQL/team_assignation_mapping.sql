@@ -22,7 +22,7 @@ SELECT
     closed_code,
     group_code,
     CASE
-	    WHEN group_code = 'Unknown' THEN 'Unknown'
+	    WHEN group_code = 'Unknown' THEN 'Unknown' -- group_code = unknown menas we don't know which team has been assigned
 		
         WHEN closed_code = 'code 1' THEN 'Network Operations Team'
 
@@ -77,13 +77,4 @@ JOIN assigned_team c
    ON a.closed_code= c.closed_code
 group by a.incident_id, b.root_cause, c.team_assigned;
 
-select incident_id, team_assigned, closed_code
-from incident_data
 
--- we see there no meaning of group_code
-select group_code, team_assigned
-from assigned_team
-where group_code='Unknown'
-group by team_assigned, group_code;
-
-Truncate table assigned_team;
