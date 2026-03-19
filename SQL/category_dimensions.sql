@@ -1,60 +1,61 @@
 CREATE TABLE category_dimension (
+    closed_code Varchar(20), -- primary key
     category_code VARCHAR(20),
-    root_cause VARCHAR(100),
     category_name VARCHAR(100)
 );
 
 INSERT INTO category_dimension
 SELECT DISTINCT
-    i.category AS category_code,
-    r.root_cause,
-
+    r.code AS closed_code,
+	i.category AS category_code,
     CASE
+	    WHEN i.category = 'Other' 
+		    THEN 'General - Other Issue' -- when category itself is not defined.
     
-        WHEN r.root_cause = 'Network Failure' 
+        WHEN r.code = 'code 1' 
             THEN 'Network - Connectivity Issue'
         
-        WHEN r.root_cause = 'Database Issue' 
+        WHEN r.code  = 'code 2' 
             THEN 'Database - Performance Issue'
-        WHEN r.root_cause = 'Data Corruption' 
+        WHEN r.code = 'code 11' 
             THEN 'Database - Data Integrity Issue'
         
-        WHEN r.root_cause = 'Application Bug' 
+        WHEN r.code = 'code 3' 
             THEN 'Application - Functional Defect'
-        WHEN r.root_cause = 'Job Scheduling Failure' 
+        WHEN r.code = 'code 13' 
             THEN 'Application - Batch Failure'
         
-        WHEN r.root_cause = 'Configuration Error' 
+        WHEN r.code = 'code 4' 
             THEN 'Configuration - Misconfiguration'
         
-        WHEN r.root_cause = 'Server Overload' 
+        WHEN r.code = 'code 5' 
             THEN 'Infrastructure - Capacity Issue'
-        WHEN r.root_cause = 'Hardware Failure' 
+        WHEN r.code = 'code 16' 
             THEN 'Infrastructure - Hardware Failure'
         
-        WHEN r.root_cause = 'Authentication Failure' 
+        WHEN r.code = 'code 6' 
             THEN 'Security - Login/Auth Issue'
-        WHEN r.root_cause = 'Security Policy Block' 
+        WHEN r.code = 'code 12' 
             THEN 'Security - Policy Restriction'
         
-        WHEN r.root_cause = 'API Timeout' 
+        WHEN r.code = 'code 7' 
             THEN 'Integration - API Timeout'
-        WHEN r.root_cause = 'Integration Failure' 
+        WHEN r.code = 'code 14' 
             THEN 'Integration - System Failure'
         
-        WHEN r.root_cause = 'Memory Leak' 
+        WHEN r.code = 'code 8' 
             THEN 'Performance - Memory Issue'
         
-        WHEN r.root_cause = 'Disk Space Issue' 
+        WHEN r.code = 'code 9' 
             THEN 'Infrastructure - Storage Issue'
         
-        WHEN r.root_cause = 'Third-Party Service Failure' 
+        WHEN r.code = 'code 10' 
             THEN 'External - Vendor Dependency'
         
-        WHEN r.root_cause = 'Deployment Error' 
+        WHEN r.code = 'code 15' 
             THEN 'DevOps - Release Failure'
         
-        WHEN r.root_cause IN ('Unknown System Error', 'Not Documented') 
+        WHEN r.code IN ('code 17', 'Unknown') 
             THEN 'General - Unknown Issue'
         
         ELSE 'General - Other Issue'
@@ -88,11 +89,8 @@ left Join assigned_team d
 
 SELECT 
     i.incident_id,
-	i.closed_code,
     r.root_cause,
-	i.category,
     c.category_name,
-	i.team_assigned,
     a.team_assigned
 
 FROM incident_data i
@@ -107,3 +105,8 @@ LEFT JOIN assigned_team a
 LEFT JOIN category_dimension c
     ON i.category = c.category_code
     AND r.root_cause = c.root_cause;
+
+select category_name, closed_code, category_code from category_dimension 
+where category_name= 'General - Other Issue';
+
+Truncate table category_dimension;
