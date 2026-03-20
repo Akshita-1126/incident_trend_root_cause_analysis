@@ -130,6 +130,9 @@ UPDATE incident_data
 SET team_assigned = 'Unknown'
 WHERE team_assigned= '?';
 
+Alter table incident_data
+Drop column status; -- the status is resolved for all incidents so this column is unnessary
+
 SELECT * FROM incident_data;
 
 
