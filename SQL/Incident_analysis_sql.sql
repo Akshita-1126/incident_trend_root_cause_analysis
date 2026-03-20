@@ -182,7 +182,7 @@ SET sla_breach = CASE
 	WHEN priority = 'P3-Medium' And resolution_time_hour>168  THEN 'Yes'
     ELSE 'No'
 END;
-SELECT * FROM incident_data ;
+SELECT * FROM incident_data order by incident_id;
 
 --
 SELECT severity, resolution_time_hour, priority, sla_breach
