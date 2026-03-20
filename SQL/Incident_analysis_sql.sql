@@ -150,7 +150,7 @@ UPDATE incident_data
 SET 
 resolution_time_hour = EXTRACT(EPOCH FROM (resolved_at - created_at)) / 3600,
 created_hour = EXTRACT(HOUR FROM created_at),
-day_of_week = TO_CHAR(created_at, 'Day'),
+day_of_week = TO_CHAR(created_at, 'FMDay'),
 month = TO_CHAR(created_at, 'Month');
 
 -- for shift logic
@@ -182,8 +182,7 @@ SET sla_breach = CASE
 	WHEN priority = '3-Low' And resolution_time_hour<168  THEN 'Yes'
     ELSE 'No'
 END;
-SELECT * FROM incident_data;
-
+SELECT * FROM incident_data ;
 
 
 
