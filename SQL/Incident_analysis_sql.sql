@@ -135,6 +135,63 @@ Drop column status; -- the status is resolved for all incidents so this column i
 
 SELECT * FROM incident_data;
 
+-- adding columns like resolved_time_hour, shift, created_hour, day_of_week, month, and priority.
+
+ALTER TABLE incident_data
+ADD COLUMN resolution_time_hour FLOAT,
+ADD COLUMN shift VARCHAR(20),
+ADD COLUMN created_hour INT,
+ADD COLUMN day_of_week VARCHAR(20),
+ADD COLUMN month VARCHAR(20),
+ADD COLUMN priority VARCHAR(20);
+
+-- Updating the columns, resolution_time_hour, created_hour, day_of_week, and month.
+UPDATE incident_data
+SET 
+resolution_time_hour = EXTRACT(EPOCH FROM (resolved_at - created_at)) / 3600,
+created_hour = EXTRACT(HOUR FROM created_at),
+day_of_week = TO_CHAR(created_at, 'Day'),
+month = TO_CHAR(created_at, 'Month');
+
+-- for shift logic
+UPDATE incident_data
+SET
+shift = CASE 
+    WHEN EXTRACT(HOUR FROM created_at) BETWEEN 7 AND 14 THEN 'Morning'
+    WHEN EXTRACT(HOUR FROM created_at) BETWEEN 15 AND 22 THEN 'Evening'
+    ELSE 'Night'
+	END;
+
+-- for priority logic
+UPDATE incident_data
+SET
+priority = CASE 
+    WHEN severity LIKE '1%' THEN '1-High'
+    WHEN severity LIKE '2%' THEN '2-Medium'
+    WHEN severity LIKE '3%' THEN '3-Low'
+    ELSE 'Low'
+	END;
+
+-- one more column - SLA breach
+ALTER TABLE incident_data ADD COLUMN sla_breach VARCHAR(10);
+
+UPDATE incident_data
+SET sla_breach = CASE 
+    WHEN priority = '1-High' And resolution_time_hour<24  THEN 'Yes'
+	WHEN priority = '2-Medium' And resolution_time_hour<84 THEN 'Yes'
+	WHEN priority = '3-Low' And resolution_time_hour<168  THEN 'Yes'
+    ELSE 'No'
+END;
+SELECT * FROM incident_data;
+
+
+
+
+
+
+
+
+
 
 
 
