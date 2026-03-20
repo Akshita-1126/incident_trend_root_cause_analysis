@@ -162,29 +162,31 @@ shift = CASE
     ELSE 'Night'
 	END;
 
--- for priority logic
+-- for priority logic, Using severity 
 UPDATE incident_data
 SET
 priority = CASE 
-    WHEN severity LIKE '1%' THEN 'P1-High'
-    WHEN severity LIKE '2%' THEN 'P2-Medium'
-    WHEN severity LIKE '3%' THEN 'P3-Low'
-    ELSE 'P3-Low'
+    WHEN severity LIKE '1%' THEN 'P1-Critical'
+    WHEN severity LIKE '2%' THEN 'P2-High'
+    WHEN severity LIKE '3%' THEN 'P3-Medium'
+    ELSE 'P4-Low'
 	END;
 
--- one more column - SLA breach
+-- one more column - SLA breach- using priority and resolution_time_hour
 ALTER TABLE incident_data ADD COLUMN sla_breach VARCHAR(10);
 
 UPDATE incident_data
 SET sla_breach = CASE 
-    WHEN priority = 'P1-High' And resolution_time_hour>24  THEN 'Yes'
-	WHEN priority = 'P2-Medium' And resolution_time_hour>84 THEN 'Yes'
-	WHEN priority = 'P3-Low' And resolution_time_hour>168  THEN 'Yes'
+    WHEN priority = 'P1-Critical' And resolution_time_hour>24  THEN 'Yes'
+	WHEN priority = 'P2-High' And resolution_time_hour>84 THEN 'Yes'
+	WHEN priority = 'P3-Medium' And resolution_time_hour>168  THEN 'Yes'
     ELSE 'No'
 END;
 SELECT * FROM incident_data ;
 
-
+--
+SELECT severity, resolution_time_hour, priority, sla_breach
+FROM incident_data;
 
 
 
