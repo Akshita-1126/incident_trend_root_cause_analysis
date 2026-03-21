@@ -1,96 +1,52 @@
 CREATE TABLE category_dimension (
-    closed_code Varchar(20), -- primary key
-    category_code VARCHAR(20),
-    category_name VARCHAR(100)
+    category_code VARCHAR(50) PRIMARY KEY,
+    category_group VARCHAR(100)
 );
 
-INSERT INTO category_dimension
+INSERT INTO category_dimension (category_code, category_group)
 SELECT DISTINCT
-    r.code AS closed_code,
-	i.category AS category_code,
-    CASE
-	    WHEN i.category = 'Other' 
-		    THEN 'General - Other Issue' -- when category itself is not defined.
-    
-        WHEN r.code = 'code 1' 
-            THEN 'Network - Connectivity Issue'
-        
-        WHEN r.code  = 'code 2' 
-            THEN 'Database - Performance Issue'
-        WHEN r.code = 'code 11' 
-            THEN 'Database - Data Integrity Issue'
-        
-        WHEN r.code = 'code 3' 
-            THEN 'Application - Functional Defect'
-        WHEN r.code = 'code 13' 
-            THEN 'Application - Batch Failure'
-        
-        WHEN r.code = 'code 4' 
-            THEN 'Configuration - Misconfiguration'
-        
-        WHEN r.code = 'code 5' 
-            THEN 'Infrastructure - Capacity Issue'
-        WHEN r.code = 'code 16' 
-            THEN 'Infrastructure - Hardware Failure'
-        
-        WHEN r.code = 'code 6' 
-            THEN 'Security - Login/Auth Issue'
-        WHEN r.code = 'code 12' 
-            THEN 'Security - Policy Restriction'
-        
-        WHEN r.code = 'code 7' 
-            THEN 'Integration - API Timeout'
-        WHEN r.code = 'code 14' 
-            THEN 'Integration - System Failure'
-        
-        WHEN r.code = 'code 8' 
-            THEN 'Performance - Memory Issue'
-        
-        WHEN r.code = 'code 9' 
-            THEN 'Infrastructure - Storage Issue'
-        
-        WHEN r.code = 'code 10' 
-            THEN 'External - Vendor Dependency'
-        
-        WHEN r.code = 'code 15' 
-            THEN 'DevOps - Release Failure'
-        
-        WHEN r.code IN ('code 17', 'Unknown') 
-            THEN 'General - Unknown Issue'
-        
-        ELSE 'General - Other Issue'
-        
-    END AS category_name
+    category AS category_code,
+    CASE 
+        -- Infrastructure & System
+        WHEN category IN ('Category 61','Category 46','Category 28','Category 26','Category 24','Category 20','Category 17','Category 62','Category 63')
+            THEN 'Infrastructure & System'
 
-FROM incident_data i
-JOIN root_cause_mapping r
-    ON i.closed_code = r.code;
+        -- Application & Software
+        WHEN category IN ('Category 57','Category 34','Category 32','Category 43','Category 53','Category 55','Category 31')
+            THEN 'Application & Software'
+
+        -- Data & Database
+        WHEN category IN ('Category 23','Category 13','Category 38')
+            THEN 'Data & Database'
+
+        -- Integration & API
+        WHEN category IN ('Category 8','Category 12','Category 37')
+            THEN 'Integration & API'
+
+        -- Security & Access
+        WHEN category IN ('Category 42','Category 44','Category 41','Category 14','Category 7')
+            THEN 'Security & Access'
+
+        -- Performance & Monitoring
+        WHEN category IN ('Category 9','Category 45','Category 40','Category 22')
+            THEN 'Performance & Monitoring'
+
+        -- Operations & Process
+        WHEN category IN ('Category 50','Category 54','Category 47','Category 56','Category 21','Category 25','Category 29','Category 30','Category 16')
+            THEN 'Operations & Process'
+
+        -- Default fallback
+        ELSE 'General / Unknown'
+    END AS category_group
+FROM incident_data;
 
 select * from category_dimension;
 
-select a.incident_id, a.closed_code,
-b.root_cause, 
-a.category,
-c.category_name,
-a.team_assigned,
-d.team_assigned
-
-from incident_data a
-
-Left Join root_cause_mapping b
-     on a.closed_code=b.code
-	 
-left  Join category_mapping c
-     on a.category=c.category_code
-	 
-left Join assigned_team d
-     on a.closed_code=d.closed_code
-	 And a.team_assigned= d.group_code;
 
 SELECT 
     i.incident_id,
     r.root_cause,
-    c.category_name,
+    c.category_group,
     a.team_assigned
 
 FROM incident_data i
@@ -103,10 +59,18 @@ LEFT JOIN assigned_team a
     AND i.team_assigned = a.group_code
 
 LEFT JOIN category_dimension c
-    ON i.category = c.category_code
-    AND r.root_cause = c.root_cause;
+    ON i.category = c.category_code;
 
-select category_name, closed_code, category_code from category_dimension 
-where category_name= 'General - Other Issue';
+select a.root_cause,b.category_code 
+from root_cause_mapping a
+left Join category_dimension b
+ON a.code= b.closed_code;
 
-Truncate table category_dimension;
+
+select distinct category_code, count(closed_code)
+from category_dimension 
+group by category_code
+
+
+
+
