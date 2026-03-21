@@ -61,15 +61,6 @@ LEFT JOIN assigned_team a
 LEFT JOIN category_dimension c
     ON i.category = c.category_code;
 
-select a.root_cause,b.category_code 
-from root_cause_mapping a
-left Join category_dimension b
-ON a.code= b.closed_code;
-
-
-select distinct category_code, count(closed_code)
-from category_dimension 
-group by category_code
 
 
 
