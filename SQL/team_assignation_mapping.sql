@@ -77,4 +77,3 @@ JOIN assigned_team c
    ON a.closed_code= c.closed_code
 group by a.incident_id, b.root_cause, c.team_assigned;
 
-
