@@ -105,6 +105,12 @@ GROUP BY category
 ORDER BY total_incidents DESC
 LIMIT 5;
 
+-- Business Question 11:
+-- Measure how far extreme incidents exceed expected resolution time (e.g., 168 hrs SLA).
 
+SELECT 
+    AVG(resolution_time_hours - 168) AS avg_delay_beyond_sla
+FROM incident_dataset
+WHERE resolution_time_hours > 168;
 
 
