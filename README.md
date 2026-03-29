@@ -3,17 +3,25 @@ An end-to-end data analytics project focused on analyzing IT incident data to un
 
 ### Tools & Technologies
 
-* Python (Pandas, Data Cleaning, Feature Engineering)
-* SQL (Data Transformation, Aggregation, Query Optimization)
+* Python (Pandas, Data Cleaning, Feature Engineering, Exploratory Data Analysis, outliers detection)
+* SQL (Query Optimization, Deeper Analysis through business questions)
 * Power BI (Interactive Dashboard & Visualization)
 
 ### Project Workflow
 
-* Cleaned and preprocessed raw event log data using Python
-* Transformed data into incident-level dataset using SQL
-* Engineered key metrics like resolution time (MTTR) and root cause mapping
-* Built an interactive Power BI dashboard for real-time trend analysis
-
+* Collected and understood incident dataset from multiple parameters
+* Performed data cleaning and preprocessing using Python
+* Applied feature engineering to derive meaningful fields (e.g., SLA status, resolution time)
+* Conducted Exploratory Data Analysis (EDA) to identify trends and patterns
+* Detected and analyzed outliers to uncover high-risk incidents instead of removing them
+* Used SQL to answer business questions and perform deeper analysis on incident trends and performance
+* Designed and built 4 interactive Power BI dashboards:
+* Overview Dashboard (KPIs & summary insights)
+* Operations & Performance (workload & SLA efficiency)
+* Time-Based Analysis (trend patterns & peak periods)
+* Outlier & Risk Analysis (issue ownership & risk detection)
+* Derived actionable insights to improve incident management and SLA adherence
+  
 ### Key Insights
 
 * Identified high-frequency incident categories and recurring root causes
