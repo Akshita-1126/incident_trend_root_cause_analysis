@@ -1,4 +1,4 @@
-# Incident Analysis & Root Cause Identification
+# Incident Trend & Root Cause Analysis
 An end-to-end data analytics project focused on analyzing IT incident data to uncover trends, identify root causes, and improve resolution efficiency. This project simulates a real-world incident management system and showcases practical data analysis skills.
 
 ### Tools & Technologies
